@@ -1,10 +1,19 @@
 # Blues Hacks 2024
+Thanks for visiting! Our project is a web app that uses Bionic reading and content simplification to make your reading experience easier!
 
-On line 95 of ```index.html```, please replace the placeholder ```'REPLACE_ME_WITH_YOUR_API_KEY'``` with your openai api key.
+# API Key
+On line 95 of ```index.html```, please replace the placeholder ```'REPLACE_ME_WITH_YOUR_API_KEY'``` with your OpenAI API key.
 ```
 const APIkey = 'REPLACE_ME_WITH_YOUR_API_KEY';
 ```
 A reminder to not share your key with others for the security of your account!
+
+# Webpage Preview
+Bionic reading: <br><br>
+<img width="1439" alt="image" src="https://github.com/AnnW0/blueshacks2024/assets/133375212/7dcc0df6-dcde-4fd5-8e84-ccea80691810"> <br><br>
+Content simplification: <br><br>
+<img src="https://github.com/AnnW0/blueshacks2024/assets/133375212/2e6aefdd-e712-480b-a8f3-016c61394bbd">
+
 
 # References
 <ul>
