@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Web app for easier reading</title>
+
+        <style>
+            body {
+                font-family: 'Open Sans', sans-serif;
+                margin: 100px;
+                background-image: linear-gradient(to bottom right, #ADE4DB, #D9EDBF, #F0F2C0);
+                color: #154745;
+            }
+            textarea[type='text']{
+                background-color: rgba(255, 255, 255, 0.6);
+                font-size: medium;
+                font-family: 'Open Sans', sans-serif;
+                padding: 20px;
+                border: none;
+                border-radius: 4px;
+                min-height: 50px;
+                width: 95%;
+                resize: vertical;
+                word-wrap: break-word;
+            }
+            button{
+                padding: 10px 15px;
+                margin-right: 15px;
+                background-color: #45786E;
+                color: white; 
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            button:hover{
+                background-color: #387168;
+            }
+            #displayArea{
+                background-color: rgba(255, 255, 255, 0.6);
+                font-size: medium;
+                padding: 20px;
+                border: none;
+                width: 95%;
+                border-radius: 4px;
+                margin-top: 20px;
+                min-height: 100px;
+                word-wrap: break-word;
+            }
+        </style>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"> // this is an external script, imported. the ajax function is from this</script>
+        <script>
+            function boldFirstTwoLetters(){
+                // Get input from text field
+                var inputText = document.getElementById('inputText').value;
+                var words = inputText.split(' ');
+                var processedWords = []; 
+
+                // Bold
+                for (var i = 0; i < words.length; i++) {
+                    var word = words[i];
+    
+                    if (word.length >= 2) {    
+                        var resultWord = '<b>' + word.substring(0, 2) + '</b>' + word.substring(2);
+                        processedWords.push(resultWord);
+                    } else {
+                        processedWords.push(word);
+                    }
+                }
+                document.getElementById('displayArea').innerHTML = processedWords.join(' '); // display
+            }
+
+            function clearContent(){
+                document.getElementById('inputText').value = " ";
+                document.getElementById('displayArea').innerHTML = " ";
+            }
+
+            function simplifyText() { 
+                var inputText = document.getElementById('inputText').value;
+                document.getElementById('displayArea').innerHTML = "Loading response...";
+                
+                var requestData = {
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        { "role": "system", "content": "Simplify given content for a elementary student. Explain and elaborate any key concepts or terminology in the content that may be confusing or new to them." },
+                        { "role": "user", "content": inputText }
+                    ],
+                    temperature: 0.7, // how strict or specific, randomness (0-1)
+                    max_tokens: 310, // words and punctuation
+                    top_p: 1 // sampling diversity (0-1)
+                };
+
+                const APIkey = 'REPLACE_ME_WITH_YOUR_API_KEY';
+
+                $.ajax({ // send request to API endpoint
+                    type: 'POST',
+                    url: 'https://api.openai.com/v1/chat/completions',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + APIkey
+                    },
+                    data: JSON.stringify(requestData),
+                    success: function (response) {
+                        console.log('Success:', response);
+                        if (response.choices && response.choices.length > 0 && response.choices[0].message && response.choices[0].message.content) {
+                            document.getElementById('displayArea').innerHTML = response.choices[0].message.content;
+                        } else {
+                            console.error('Invalid response format. Response:', response);
+                        }
+                    },
+                    error: function (error) {
+                        document.getElementById('displayArea').innerHTML = "Error simplifying text. (Check browser console for details)";
+                        console.error('Error simplifying text:', error);
+                    }
+                });
+            }
+        </script>
+    </head>
+
+    <body>
+        <div>
+
+        <h1>Web app for easier reading</h1>
+        <p>A web app that uses Bionic reading and content simplification to make your reading experience easier!</p>
+            <p>Enter your text: </p>
+            <textarea type="text" id="inputText" rows="4"></textarea>
+            <br><br>
+            <button onclick="boldFirstTwoLetters()">Bionic Reading</button>
+            <button onclick="simplifyText()">Simplify Contents</button>
+            <button onclick="clearContent()">Clear</button>
+
+        </div>
+
+        <div id = "displayArea">
+            <span id="defaultText" style="color: #AAAAAA;">Your result/response will be displayed here.</span>
+        </div>
+    </body>
+</html>
